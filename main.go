@@ -2,6 +2,8 @@ package main
 
 import (
 	"flag"
+	"fmt"
+	"os"
 
 	"github.com/abersheeran/httpbenchmark/core"
 	. "github.com/abersheeran/rgo-error"
@@ -9,20 +11,28 @@ import (
 )
 
 func main() {
-	url := flag.String("url", "", "Target URL")
-	concurrency := flag.Int("concurrency", 100, "Concurrency")
-	requests := flag.Int("requests", 10000, "Requests")
+	concurrency := flag.Int("c", 100, "Concurrency")
+	requests := flag.Int("r", 10000, "Requests")
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage: %s [options] url\n", os.Args[0])
+		flag.PrintDefaults()
+	}
 
 	flag.Parse()
-	if *url == "" {
-		panic("URL is required")
+	args := flag.Args()
+	if len(args) == 0 {
+		panic("Please specify url")
 	}
+	if len(args) > 1 {
+		panic("Please use: `[options] url`, not `url [options]`")
+	}
+	url := args[0]
 
 	res := core.Benchmark{
 		Concurrency: *concurrency,
 		Requests:    *requests,
 		CallRequest: func(request *resty.Request) Result[*resty.Response] {
-			return AsResult(request.Get(*url))
+			return AsResult(request.Get(url))
 		},
 	}.Run()
 	res.Print()
