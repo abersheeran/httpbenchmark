@@ -33,7 +33,7 @@ func (b Benchmark) Run() BenchmarkResult {
 	channel := make(chan Result[*resty.Response], b.Requests)
 	control := make(chan bool, b.Concurrency)
 
-	var start_time, end_time time.Time
+	var startTime, endTime time.Time
 	var res BenchmarkResult
 
 	wg := sync.WaitGroup{}
@@ -41,7 +41,7 @@ func (b Benchmark) Run() BenchmarkResult {
 
 	go func() {
 		defer wg.Done()
-		start_time = time.Now()
+		startTime = time.Now()
 		for i := 0; i < b.Requests; i++ {
 			control <- true
 			go func() {
@@ -82,9 +82,9 @@ func (b Benchmark) Run() BenchmarkResult {
 			}
 		}
 
-		end_time = time.Now()
+		endTime = time.Now()
 
-		res.TotalTime = end_time.Sub(start_time)
+		res.TotalTime = endTime.Sub(startTime)
 		res.RequestsPerSecond = float64(res.TotalRequests) / res.TotalTime.Seconds()
 	}()
 
