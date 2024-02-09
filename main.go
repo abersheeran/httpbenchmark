@@ -50,15 +50,6 @@ func main() {
 		panic("Please specify only one of `-b` and `-f`")
 	}
 
-	fmt.Println("Concurrency:", *concurrency)
-	fmt.Println("Requests:", *requests)
-	fmt.Println("Method:", *method)
-	fmt.Println("Headers:", headers)
-	fmt.Println("Body:", *body)
-	fmt.Println("File:", *file)
-	fmt.Println("URL:", url)
-	fmt.Println()
-
 	res := core.Benchmark{
 		Concurrency: *concurrency,
 		Requests:    *requests,
